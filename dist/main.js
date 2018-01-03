@@ -5,11 +5,13 @@ var roleRepairer = require('role.repairer');
 var roleWarrior = require('role.warrior');
 var utilMaintenance = require('util.maintenance');
 var utilSpawner = require('util.spawner');
+var utilSources = require('util.sources');
 
 module.exports.loop = function () {
 
     utilMaintenance.deleteDeadCreeps();
     utilSpawner.run();
+    utilSources.populate();
     
     for(var name in Game.creeps) {
         var creep = Game.creeps[name];

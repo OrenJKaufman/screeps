@@ -7,6 +7,8 @@
  * mod.thing == 'a thing'; // true
  */
 
+var utilSources = require('util.sources');
+
 module.exports = {
     harvest: function(creep) {
         var source;
@@ -14,15 +16,9 @@ module.exports = {
             source = Game.getObjectById(creep.memory.sourceId);
         }
         else {
-            //var sources = creep.room.find(FIND_SOURCES);
-            //source = sources[_.random(0, sources.length - 1)];
-            //creep.memory.sourceId = source.id;
-            if (_.random(0, 5) == 0) {
-                creep.memory.sourceId = '59f1a42982100e1594f3c93c';
-            }
-            else {
-                creep.memory.sourceId = '59f1a42982100e1594f3c93b';
-            }
+            var sourceId = utilSources.nextSourceId();
+            creep.memory.sourceId = sourceId;
+            console.log(sourceId);
             source = Game.getObjectById(creep.memory.sourceId);
         }
         

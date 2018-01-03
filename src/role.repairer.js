@@ -11,6 +11,7 @@ var roleRepairer = {
 	    }
 	    if(!creep.memory.repairing && creep.carry.energy == creep.carryCapacity) {
 	        creep.memory.repairing = true;
+            creep.memory.sourceId = null;
 	        creep.say('⚡ repairing');
 	    }
 
