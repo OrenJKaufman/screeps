@@ -17,7 +17,10 @@ var roleRepairer = {
 
 	    if(creep.memory.repairing) {
 	        const targets = Game.spawns['Spawn1'].room.find(FIND_STRUCTURES, {
-                filter: function(target) { return target.structureType == STRUCTURE_ROAD && (target.hits < target.hitsMax) }
+                filter: function(target) { 
+                    return (target.structureType == STRUCTURE_ROAD || target.structureType == STRUCTURE_CONTAINER) && 
+                           (target.hits < (target.hitsMax - creep.carry.energy * 100) || target.hits / target.hitsMax < 0.75);
+                }
             });
             
             if (targets.length === 0) {

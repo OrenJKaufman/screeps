@@ -25,16 +25,44 @@ var roleBuilder = {
 	    }
 
 	    if(creep.memory.building) {
-	        var targets = creep.room.find(FIND_CONSTRUCTION_SITES);
-            if(targets.length) {
-                if(creep.build(targets[0]) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(targets[0], {visualizePathStyle: {stroke: '#ffffff'}});
-                }
-            }
+			var structureToBuild;
+			if (creep.memory.prioritizeStructureId) {
+				structureToBuild = Game.getObjectById(creep.memory.prioritizeStructureId);
+				if (!structureToBuild) {
+					creep.memory.prioritizeStructureId = null;
+				}
+			}
+			if (!structureToBuild) {
+				var targets = creep.room.find(FIND_CONSTRUCTION_SITES);
+				if(targets.length) {
+					structureToBuild = targets[0];
+				}
+			}
+			if (structureToBuild) {
+				if(creep.build(structureToBuild) == ERR_NOT_IN_RANGE) {
+					creep.moveTo(structureToBuild, {visualizePathStyle: {stroke: '#ffffff'}});
+				}
+			}
 	    }
 	    else {
 	        utilHarvest.harvest(creep);
 	    }
+	},
+	prioritizeStructure: function(structure) {
+		const builder = structure.pos.findClosestByPath(FIND_MY_CREEPS, {
+			filter: function(creep) {
+				return (creep.memory.role === 'builder' || creep.memory.role === 'repairer') && !creep.memory.prioritizeStructureId;
+			}
+		});
+		if (builder) {
+			builder.memory.role = 'builder';
+			builder.memory.prioritizeStructureId = structure.id;
+		}
+		else {
+			return ERR_NOT_FOUND;
+		}
+
+		return builder.name;
 	}
 };
 

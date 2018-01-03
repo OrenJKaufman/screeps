@@ -1,5 +1,4 @@
 var sourcesData = require('data.sources');
-var preferredSourceIndex = 0;
 
 module.exports = {
     populate: function() {
@@ -7,9 +6,9 @@ module.exports = {
             source.creepCount = 0;
         });
         _.forEach(Game.creeps, creep => {
-            if (creep.sourceId) {
+            if (creep.memory.sourceId) {
                 const destSource = _.find(sourcesData.data, source => {
-                    return source.sourceId === creep.sourceId;
+                    return source.sourceId === creep.memory.sourceId;
                 });
                 destSource.creepCount++;
             }
@@ -18,7 +17,9 @@ module.exports = {
     nextSourceId: function() {
         var candidateSource;
         var loopCount = 0;
-        var sourcesLength = sourcesData.data.length;
+        const sourcesLength = sourcesData.data.length;
+        const preferredSourceIndex = Memory.preferredSourceIndex || 0;
+
         this.outputSourcesData();
         console.log('Preferred Source Index: ' + preferredSourceIndex);
         console.log('');
@@ -33,7 +34,7 @@ module.exports = {
             loopCount++;
         } while(loopCount < sourcesLength)
 
-        preferredSourceIndex = (preferredSourceIndex + loopCount + 1) % sourcesLength;
+        Memory.preferredSourceIndex = (preferredSourceIndex + loopCount + 1) % sourcesLength;
         candidateSource.creepCount++;
         return candidateSource.sourceId;
     },
