@@ -28,5 +28,8 @@ module.exports.loop = function () {
         if(creep.memory.role == 'warrior') {
             roleWarrior.run(creep);
         }
+        if(creep.memory.role == 'warrior2') {
+            roleWarrior.run(creep);
+        }
     }
 }
