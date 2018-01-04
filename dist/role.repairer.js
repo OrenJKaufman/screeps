@@ -35,7 +35,20 @@ var roleRepairer = {
 	    else {
 	        utilHarvest.harvest(creep);
 	    }
-	}
+    },
+    outputHealth: function(structureType, minHealth) {
+        const targets = Game.spawns['Spawn1'].room.find(FIND_STRUCTURES, {
+            filter: function(target) { 
+                return (target.structureType == structureType) && 
+                       (target.hits <= minHealth);
+            }
+        });
+        targets.forEach(target => {
+            console.log('X: ' + target.pos.x + ' Y: ' + target.pos.y + ' Hits: ' + target.hits);
+        });
+
+        return OK;
+    }
 };
 
 module.exports = roleRepairer;

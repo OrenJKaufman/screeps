@@ -13,6 +13,7 @@ module.exports = {
         var warriorCount = 0;
         var builderCount = 0;
         var harvesterCount = 0;
+        var runnerCount = 0;
         
         for(const i in Game.creeps) {
             const creep = Game.creeps[i];
@@ -21,9 +22,13 @@ module.exports = {
             else if (creepRole === 'upgrader') { upgraderCount++; }
             else if (creepRole === 'warrior') { warriorCount++; }
             else if (creepRole === 'harvester') { harvesterCount++; }
+            else if (creepRole === 'runner') { runnerCount++; }
         }
         
-        if (harvesterCount < 3) {
+        if (runnerCount < 1) {
+            spawnRunner();
+        }
+        else if (harvesterCount < 3) {
             spawnHarvester();
         }
         else if (builderCount < 3) {
@@ -44,6 +49,10 @@ module.exports = {
             }
         }
 
+        function spawnRunner() {
+            Game.spawns.Spawn1.spawnCreep([WORK, CARRY, WORK, CARRY, MOVE, CARRY, MOVE, MOVE, MOVE], 'Runner' + Game.time, { memory: { role: 'runner' } } );
+        }
+        
         function spawnBuilder() {
             Game.spawns.Spawn1.spawnCreep([WORK, CARRY, WORK, CARRY, MOVE, CARRY, MOVE, MOVE, MOVE], 'Builder' + Game.time, { memory: { role: 'repairer' } } );
         }

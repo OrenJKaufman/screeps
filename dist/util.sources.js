@@ -2,12 +2,19 @@ var sourcesData = require('data.sources');
 
 module.exports = {
     populate: function() {
-        sourcesData.data.forEach(source => {
+        sourcesData.sources.forEach(source => {
             source.creepCount = 0;
+            const sourceObject = Game.getObjectById(source.sourceId);
+            if (sourceObject instanceof Source) {
+                source.energy = sourceObject.energy;
+            }
+            else {
+                source.energy = sourceObject.store[RESOURCE_ENERGY];
+            }
         });
         _.forEach(Game.creeps, creep => {
             if (creep.memory.sourceId) {
-                const destSource = _.find(sourcesData.data, source => {
+                const destSource = _.find(sourcesData.sources, source => {
                     return source.sourceId === creep.memory.sourceId;
                 });
                 destSource.creepCount++;
@@ -17,7 +24,7 @@ module.exports = {
     nextSourceId: function() {
         var candidateSource;
         var loopCount = 0;
-        const sourcesLength = sourcesData.data.length;
+        const sourcesLength = sourcesData.sources.length;
         const preferredSourceIndex = Memory.preferredSourceIndex || 0;
 
         this.outputSourcesData();
@@ -25,10 +32,10 @@ module.exports = {
         console.log('');
         do {
 //            console.log((preferredSourceIndex + loopCount) % sourcesLength);
-//            console.log('length: ' + sourcesData.data.length);
-            candidateSource = sourcesData.data[(preferredSourceIndex + loopCount) % sourcesLength];
+//            console.log('length: ' + sourcesData.sources.length);
+            candidateSource = sourcesData.sources[(preferredSourceIndex + loopCount) % sourcesLength];
  //           console.log(candidateSource);
-            if (candidateSource.creepCount < candidateSource.maxCreeps) {
+            if (candidateSource.creepCount < candidateSource.maxCreeps && candidateSource.energy > 0) {
                 break;
             }
             loopCount++;
@@ -39,7 +46,7 @@ module.exports = {
         return candidateSource.sourceId;
     },
     outputSourcesData: function() {
-        sourcesData.data.forEach(source => {
+        sourcesData.sources.forEach(source => {
             console.log('Source ID: ' + source.sourceId + ' Creep Count: ' + source.creepCount + ' Max Creep Count: ' + source.maxCreeps);
         });
     },
