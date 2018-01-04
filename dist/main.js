@@ -4,6 +4,7 @@ var roleBuilder = require('role.builder');
 var roleRepairer = require('role.repairer');
 var roleWarrior = require('role.warrior');
 var roleRunner = require('role.runner');
+var roleTower = require('role.tower');
 var utilMaintenance = require('util.maintenance');
 var utilSpawner = require('util.spawner');
 var utilSources = require('util.sources');
@@ -35,4 +36,6 @@ module.exports.loop = function () {
             roleWarrior.run(creep);
         }
     }
+
+    Game.spawns['Spawn1'].room.find(FIND_MY_STRUCTURES, { filter: { structureType: STRUCTURE_TOWER }}).forEach(tower => { roleTower.run(tower) });
 }

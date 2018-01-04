@@ -60,23 +60,23 @@ module.exports = {
         return OK;
 
         function spawnRunner() {
-            Game.spawns.Spawn1.spawnCreep([WORK, CARRY, WORK, CARRY, MOVE, CARRY, MOVE, CARRY, MOVE, MOVE], 'Runner' + Game.time, { memory: { role: 'runner' } } );
+            Game.spawns.Spawn1.spawnCreep([CARRY, CARRY, CARRY, MOVE, CARRY, MOVE, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE], 'Runner' + Game.time, { memory: { role: 'runner' } } );
         }
         
         function spawnBuilder() {
-            Game.spawns.Spawn1.spawnCreep([WORK, CARRY, WORK, CARRY, MOVE, CARRY, MOVE, CARRY, MOVE, MOVE], 'Builder' + Game.time, { memory: { role: 'repairer' } } );
+            Game.spawns.Spawn1.spawnCreep([CARRY, CARRY, CARRY, MOVE, CARRY, MOVE, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE], 'Builder' + Game.time, { memory: { role: 'repairer' } } );
         }
         
         function spawnUpgrader() {
-            Game.spawns.Spawn1.spawnCreep([WORK, CARRY, WORK, CARRY, MOVE, CARRY, MOVE, CARRY, MOVE, MOVE], 'Upgrader' + Game.time, { memory: { role: 'upgrader' } } );
+            Game.spawns.Spawn1.spawnCreep([CARRY, CARRY, CARRY, MOVE, CARRY, MOVE, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE], 'Upgrader' + Game.time, { memory: { role: 'upgrader' } } );
         }
         
         function spawnWarrior() {
-            Game.spawns.Spawn1.spawnCreep([TOUGH, TOUGH, TOUGH, MOVE, ATTACK, MOVE, ATTACK, MOVE, ATTACK, MOVE, ATTACK], 'Warrior' + Game.time, { memory: { role: 'warrior' } } );
+            Game.spawns.Spawn1.spawnCreep([TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, MOVE, ATTACK, MOVE, ATTACK, MOVE, ATTACK, MOVE, ATTACK, MOVE, ATTACK], 'Warrior' + Game.time, { memory: { role: 'warrior' } } );
         }
         
         function spawnHarvester() {
-            Game.spawns.Spawn1.spawnCreep([WORK, CARRY, WORK, CARRY, MOVE, CARRY, MOVE, CARRY, MOVE, MOVE], 'Harvester' + Game.time, { memory: { role: 'harvester' } } );
+            Game.spawns.Spawn1.spawnCreep([CARRY, CARRY, CARRY, MOVE, CARRY, MOVE, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE], 'Harvester' + Game.time, { memory: { role: 'harvester' } } );
         }
     }
 };

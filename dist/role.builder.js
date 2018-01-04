@@ -4,7 +4,12 @@ var roleBuilder = {
 
     /** @param {Creep} creep **/
     run: function(creep) {
-
+		if (_.size(Game.constructionSites) === 0) {
+			creep.memory.timeToRepair = 10;
+			creep.memory.role = 'repairer';
+			return OK;
+		}
+		
 	    if(creep.memory.building && creep.carry.energy == 0) {
             creep.memory.building = false;
             creep.say('🔄 harvest');
@@ -20,7 +25,7 @@ var roleBuilder = {
 	        else {
 	            creep.memory.timeToRepair = 10;
 	            creep.memory.role = 'repairer';
-	            return;
+	            return OK;
 	        }
 	    }
 

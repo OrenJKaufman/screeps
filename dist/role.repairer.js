@@ -25,16 +25,37 @@ var roleRepairer = {
                     creep.memory.repairId = null;
                 }
             }
-
+            
             if (!creep.memory.repairId) {
-                const targets = Game.spawns['Spawn1'].room.find(FIND_STRUCTURES, {
-                    filter: function(target) { 
-                        return (target.structureType == STRUCTURE_ROAD || target.structureType == STRUCTURE_CONTAINER) && 
-                               (target.hits < (target.hitsMax - creep.carry.energy * 100) || target.hits / target.hitsMax < 0.75);
+                var filterFunction;
+                if (_.size(Game.constructionSites) > 0) {
+                    filterFunction = function(target) {
+                        return ((target.structureType == STRUCTURE_ROAD || target.structureType == STRUCTURE_CONTAINER ||
+                                 (target instanceof OwnedStructure && target.my)) && 
+                                (target.hits < (target.hitsMax - creep.carry.energy * 100) || target.hits / target.hitsMax < 0.75)) ||
+                               ((target.structureType === STRUCTURE_TOWER) && target.my && target.energy < (target.energyCapacity - creep.carry.energy));         
                     }
+                }
+                else {
+                    filterFunction = function(target) {
+                        return ((target.structureType == STRUCTURE_ROAD || target.structureType == STRUCTURE_CONTAINER ||
+                                 (target instanceof OwnedStructure && target.my)) && 
+                                (target.hits < target.hitsMax)) ||
+                               ((target.structureType === STRUCTURE_TOWER) && target.my && target.energy < target.energyCapacity);         
+                    }
+                }
+
+                const targets = Game.spawns['Spawn1'].room.find(FIND_STRUCTURES, {
+                    filter: filterFunction
                 });
                 if (targets.length) {
-                    creep.memory.repairId = targets[0].id;
+                    const firstTower = _.find(targets, target => { return (target.structureType === STRUCTURE_TOWER) && (target.energy < target.energyCapacity) });
+                    if (firstTower) {
+                        creep.memory.repairId = firstTower.id;
+                    }
+                    else {
+                        creep.memory.repairId = targets[0].id;
+                    }
                 }
             }
             
@@ -43,8 +64,15 @@ var roleRepairer = {
             }
             else {
                 repairTarget = repairTarget || Game.getObjectById(creep.memory.repairId);
-                if(creep.repair(repairTarget) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(repairTarget, {visualizePathStyle: {stroke: '#ffaa00'}});
+                if (repairTarget.hits < repairTarget.hitsMax) {
+                    if(creep.repair(repairTarget) == ERR_NOT_IN_RANGE) {
+                        creep.moveTo(repairTarget, {visualizePathStyle: {stroke: '#ffaa00'}});
+                    }
+                }
+                else if (repairTarget.structureType === STRUCTURE_TOWER && repairTarget.energy < repairTarget.energyCapacity) {
+                    if(creep.transfer(repairTarget, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                        creep.moveTo(repairTarget, {visualizePathStyle: {stroke: '#ffaa00'}});
+                    }
                 }
             }
         }
