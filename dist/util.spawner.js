@@ -24,41 +24,51 @@ module.exports = {
             else if (creepRole === 'harvester') { harvesterCount++; }
             else if (creepRole === 'runner') { runnerCount++; }
         }
+
+        var constructionSiteCount;
         
         if (runnerCount < 1) {
             spawnRunner();
+            return OK;
         }
-        else if (harvesterCount < 3) {
+        if (harvesterCount < 3) {
             spawnHarvester();
+            return OK;
         }
-        else if (builderCount < 3) {
-            spawnBuilder();
+        if (builderCount < 3) {
+            if (_.size(Game.constructionSites) > 0 || builderCount < 1) {
+                spawnBuilder();
+                return OK;
+            }
         }
-        else if (warriorCount < 3) {
+        if (warriorCount < 3) {
             spawnWarrior();
+            return OK;
         }
-        else if (upgraderCount < 3) {
+        if (upgraderCount < 3) {
             spawnUpgrader();
-        }
-        else {
-            if (_.random(0, 1) == 0) {
-                spawnWarrior();
-            }
-            else {
-                spawnUpgrader();
-            }
+            return OK;
         }
 
+        if (_.random(0, 1) == 0) {
+            spawnWarrior();
+        }
+        else {
+            spawnUpgrader();
+        }
+
+        return OK;
+
         function spawnRunner() {
-            Game.spawns.Spawn1.spawnCreep([WORK, CARRY, WORK, CARRY, MOVE, CARRY, MOVE, MOVE, MOVE], 'Runner' + Game.time, { memory: { role: 'runner' } } );
+            Game.spawns.Spawn1.spawnCreep([WORK, CARRY, WORK, CARRY, MOVE, CARRY, MOVE, CARRY, MOVE, MOVE], 'Runner' + Game.time, { memory: { role: 'runner' } } );
         }
         
         function spawnBuilder() {
-            Game.spawns.Spawn1.spawnCreep([WORK, CARRY, WORK, CARRY, MOVE, CARRY, MOVE, MOVE, MOVE], 'Builder' + Game.time, { memory: { role: 'repairer' } } );
+            Game.spawns.Spawn1.spawnCreep([WORK, CARRY, WORK, CARRY, MOVE, CARRY, MOVE, CARRY, MOVE, MOVE], 'Builder' + Game.time, { memory: { role: 'repairer' } } );
         }
         
         function spawnUpgrader() {
-            Game.spawns.Spawn1.spawnCreep([WORK, CARRY, WORK, CARRY, MOVE, CARRY, MOVE, MOVE, MOVE], 'Upgrader' + Game.time, { memory: { role: 'upgrader' } } );
+            Game.spawns.Spawn1.spawnCreep([WORK, CARRY, WORK, CARRY, MOVE, CARRY, MOVE, CARRY, MOVE, MOVE], 'Upgrader' + Game.time, { memory: { role: 'upgrader' } } );
         }
         
         function spawnWarrior() {
@@ -66,7 +76,7 @@ module.exports = {
         }
         
         function spawnHarvester() {
-            Game.spawns.Spawn1.spawnCreep([WORK, CARRY, WORK, CARRY, MOVE, CARRY, MOVE, MOVE, MOVE], 'Harvester' + Game.time, { memory: { role: 'harvester' } } );
+            Game.spawns.Spawn1.spawnCreep([WORK, CARRY, WORK, CARRY, MOVE, CARRY, MOVE, CARRY, MOVE, MOVE], 'Harvester' + Game.time, { memory: { role: 'harvester' } } );
         }
     }
 };

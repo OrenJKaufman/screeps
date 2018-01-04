@@ -21,7 +21,7 @@ module.exports = {
         if (!creep.memory.sourceId) {
             var sourceId = utilSources.nextSourceId();
             creep.memory.sourceId = sourceId;
-            console.log(sourceId);
+            //console.log(sourceId);
             source = Game.getObjectById(creep.memory.sourceId);
         }
         

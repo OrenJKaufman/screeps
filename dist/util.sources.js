@@ -28,8 +28,8 @@ module.exports = {
         const preferredSourceIndex = Memory.preferredSourceIndex || 0;
 
         this.outputSourcesData();
-        console.log('Preferred Source Index: ' + preferredSourceIndex);
-        console.log('');
+        //console.log('Preferred Source Index: ' + preferredSourceIndex);
+        //console.log('');
         do {
 //            console.log((preferredSourceIndex + loopCount) % sourcesLength);
 //            console.log('length: ' + sourcesData.sources.length);
@@ -47,7 +47,7 @@ module.exports = {
     },
     outputSourcesData: function() {
         sourcesData.sources.forEach(source => {
-            console.log('Source ID: ' + source.sourceId + ' Creep Count: ' + source.creepCount + ' Max Creep Count: ' + source.maxCreeps);
+            //console.log('Source ID: ' + source.sourceId + ' Creep Count: ' + source.creepCount + ' Max Creep Count: ' + source.maxCreeps);
         });
     },
     test: function() {

@@ -7,28 +7,44 @@ var roleRepairer = {
 
         if(creep.memory.repairing && creep.carry.energy == 0) {
             creep.memory.repairing = false;
+            creep.memory.repairId = null;
             creep.say('🔄 harvest');
 	    }
 	    if(!creep.memory.repairing && creep.carry.energy == creep.carryCapacity) {
 	        creep.memory.repairing = true;
             creep.memory.sourceId = null;
 	        creep.say('⚡ repairing');
-	    }
+        }
 
 	    if(creep.memory.repairing) {
-	        const targets = Game.spawns['Spawn1'].room.find(FIND_STRUCTURES, {
-                filter: function(target) { 
-                    return (target.structureType == STRUCTURE_ROAD || target.structureType == STRUCTURE_CONTAINER) && 
-                           (target.hits < (target.hitsMax - creep.carry.energy * 100) || target.hits / target.hitsMax < 0.75);
+            var repairTarget;
+            if (creep.memory.repairId) {
+                repairTarget = Game.getObjectById(creep.memory.repairId);
+                if (repairTarget.hits >= repairTarget.hitsMax) {
+                    repairTarget = null;
+                    creep.memory.repairId = null;
                 }
-            });
+            }
+
+            if (!creep.memory.repairId) {
+                const targets = Game.spawns['Spawn1'].room.find(FIND_STRUCTURES, {
+                    filter: function(target) { 
+                        return (target.structureType == STRUCTURE_ROAD || target.structureType == STRUCTURE_CONTAINER) && 
+                               (target.hits < (target.hitsMax - creep.carry.energy * 100) || target.hits / target.hitsMax < 0.75);
+                    }
+                });
+                if (targets.length) {
+                    creep.memory.repairId = targets[0].id;
+                }
+            }
             
-            if (targets.length === 0) {
+            if (!creep.memory.repairId) {
                 creep.memory.role = 'builder';
             }
             else {
-                if(targets.length && creep.repair(targets[0]) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(targets[0], {visualizePathStyle: {stroke: '#ffaa00'}});
+                repairTarget = repairTarget || Game.getObjectById(creep.memory.repairId);
+                if(creep.repair(repairTarget) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(repairTarget, {visualizePathStyle: {stroke: '#ffaa00'}});
                 }
             }
         }
