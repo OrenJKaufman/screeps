@@ -27,36 +27,50 @@ module.exports = {
 
         var constructionSiteCount;
         
+        /*
         if (runnerCount < 1) {
             spawnRunner();
             return OK;
         }
+        */
+
         if (harvesterCount < 3) {
             spawnHarvester();
             return OK;
         }
         if (builderCount < 3) {
+            if (_.size(Game.constructionSites) > 0 || builderCount < 3) {
+                spawnBuilder();
+                return OK;
+            }
+            /*
             if (_.size(Game.constructionSites) > 0 || builderCount < 1) {
                 spawnBuilder();
                 return OK;
             }
+            */
         }
+        /*
         if (warriorCount < 3) {
             spawnWarrior();
             return OK;
         }
+        */
         if (upgraderCount < 3) {
             spawnUpgrader();
             return OK;
         }
 
+        /*
         if (_.random(0, 1) == 0) {
             spawnWarrior();
         }
         else {
             spawnUpgrader();
         }
+        */
 
+        spawnUpgrader();
         return OK;
 
         function spawnRunner() {
@@ -76,7 +90,12 @@ module.exports = {
         }
         
         function spawnHarvester() {
-            Game.spawns.Spawn1.spawnCreep([CARRY, CARRY, CARRY, MOVE, CARRY, MOVE, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE], 'Harvester' + Game.time, { memory: { role: 'harvester' } } );
+            if (harvesterCount >= 2) {
+                Game.spawns.Spawn1.spawnCreep([CARRY, CARRY, CARRY, MOVE, CARRY, MOVE, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE], 'Harvester' + Game.time, { memory: { role: 'harvester' } } );
+            }
+            else {
+                Game.spawns.Spawn1.spawnCreep([CARRY, MOVE, WORK], 'Harvester' + Game.time, { memory: { role: 'harvester' } } );
+            }
         }
     }
 };

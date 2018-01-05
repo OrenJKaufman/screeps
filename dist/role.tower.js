@@ -2,7 +2,6 @@ var utilRepair = require('util.repair');
 
 module.exports = {
     run: function(tower) {
-
         const closestTarget = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
         if (closestTarget) {
             tower.attack(closestTarget);
@@ -15,10 +14,17 @@ module.exports = {
             return OK;
         }
 
-        const repairTarget = utilRepair.findTargetsToRepair(utilRepair.filterAnyInjuredTargets);
-        if (repairTarget.length) {
-            tower.repair(repairTarget[0]);
-            return OK;
+        if (tower.energy >= tower.energyCapacity) {
+            const repairTargets = utilRepair.findTargetsToRepair(utilRepair.filterAnyInjuredTargets);
+            if (repairTargets.length) {
+                const repairTarget = _.min(repairTargets, target => { return target.hits / target.hitsMax; });
+                if (repairTarget.hits / repairTarget.hitsMax < 0.75) {
+                    tower.repair(repairTarget);
+                    return OK;
+                }
+            }
         }
+
+        return OK;
 	}    
 }

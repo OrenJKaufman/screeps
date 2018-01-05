@@ -15,12 +15,11 @@ var roleRepairer = {
             creep.memory.sourceId = null;
 	        creep.say('⚡ repairing');
         }
-
 	    if(creep.memory.repairing) {
             var repairTarget;
-            if (creep.memory.repairId) {
+            if (creep.memory.repairId && (typeof creep.memory.repairId) == 'string') {
                 repairTarget = Game.getObjectById(creep.memory.repairId);
-                if (repairTarget.hits >= repairTarget.hitsMax) {
+                if (repairTarget && repairTarget.hits >= repairTarget.hitsMax) {
                     repairTarget = null;
                     creep.memory.repairId = null;
                 }
@@ -50,11 +49,16 @@ var roleRepairer = {
                 });
                 if (targets.length) {
                     const firstTower = _.find(targets, target => { return (target.structureType === STRUCTURE_TOWER) && (target.energy < target.energyCapacity) });
-                    if (firstTower) {
+                    //if (firstTower) {
+                    if (false) {
                         creep.memory.repairId = firstTower.id;
                     }
                     else {
-                        creep.memory.repairId = targets[0].id;
+                        repairTarget = _.min(targets, target => { return target.hits; });
+                        if (repairTarget) {
+                            creep.memory.repairId = repairTarget.id;
+                        }
+                        //creep.memory.repairId = targets[0].id;
                     }
                 }
             }
@@ -64,14 +68,16 @@ var roleRepairer = {
             }
             else {
                 repairTarget = repairTarget || Game.getObjectById(creep.memory.repairId);
-                if (repairTarget.hits < repairTarget.hitsMax) {
-                    if(creep.repair(repairTarget) == ERR_NOT_IN_RANGE) {
-                        creep.moveTo(repairTarget, {visualizePathStyle: {stroke: '#ffaa00'}});
+                if (repairTarget) {
+                    if (repairTarget.hits < repairTarget.hitsMax) {
+                        if(creep.repair(repairTarget) == ERR_NOT_IN_RANGE) {
+                            creep.moveTo(repairTarget, {visualizePathStyle: {stroke: '#ffaa00'}});
+                        }
                     }
-                }
-                else if (repairTarget.structureType === STRUCTURE_TOWER && repairTarget.energy < repairTarget.energyCapacity) {
-                    if(creep.transfer(repairTarget, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                        creep.moveTo(repairTarget, {visualizePathStyle: {stroke: '#ffaa00'}});
+                    else if (repairTarget.structureType === STRUCTURE_TOWER && repairTarget.energy < repairTarget.energyCapacity) {
+                        if(creep.transfer(repairTarget, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                            creep.moveTo(repairTarget, {visualizePathStyle: {stroke: '#ffaa00'}});
+                        }
                     }
                 }
             }
@@ -80,11 +86,12 @@ var roleRepairer = {
 	        utilHarvest.harvest(creep);
 	    }
     },
-    outputHealth: function(structureType, minHealth) {
+    outputHealth: function(structureType, minHealth, minMaxHealth) {
         const targets = Game.spawns['Spawn1'].room.find(FIND_STRUCTURES, {
             filter: function(target) { 
                 return (target.structureType == structureType) && 
-                       (target.hits <= minHealth);
+                       (target.hits <= minHealth) &&
+                       (target.hitsMax >= minMaxHealth);
             }
         });
         targets.forEach(target => {

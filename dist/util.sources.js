@@ -5,11 +5,13 @@ module.exports = {
         sourcesData.sources.forEach(source => {
             source.creepCount = 0;
             const sourceObject = Game.getObjectById(source.sourceId);
-            if (sourceObject instanceof Source) {
-                source.energy = sourceObject.energy;
-            }
-            else {
-                source.energy = sourceObject.store[RESOURCE_ENERGY];
+            if (sourceObject) {
+                if (sourceObject instanceof Source) {
+                    source.energy = sourceObject.energy;
+                }
+                else {
+                    source.energy = sourceObject.store[RESOURCE_ENERGY];
+                }
             }
         });
         _.forEach(Game.creeps, creep => {

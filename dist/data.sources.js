@@ -8,14 +8,8 @@ module.exports = {
         {
             sourceId: '59f1a42982100e1594f3c93c',
             maxCreeps: 1
-        },
-        {
-            sourceId: '5a4d5a5724444b0918d333d9',
-            maxCreeps: 8
         }
-    ],
-    containerId: '5a4d5a5724444b0918d333d9',
-    sourceIdForRunner: '59f1a42982100e1594f3c93c'
+    ]
 }
 
 
